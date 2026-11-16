@@ -42,8 +42,13 @@ public class BadIOGUI {
     public BadIOGUI() {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
-        final JButton write = new JButton("Write on file");
-        canvas.add(write, BorderLayout.CENTER);
+        final JPanel writePanel = new JPanel();
+        writePanel.setLayout(new BoxLayout(writePanel, BoxLayout.LINE_AXIS));
+        canvas.add(writePanel, BorderLayout.CENTER);
+        final JButton write = new JButton("Write");
+        writePanel.add(write);
+        final JButton read = new JButton("Read");
+        writePanel.add(read);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         /*
@@ -69,6 +74,20 @@ public class BadIOGUI {
                 }
             }
         );
+        read.addActionListener(new ActionListener() {
+            @Override 
+            public void actionPerformed(final ActionEvent buttonClick) {
+                try {
+                    final List<String> lines = Files.readAllLines(new File(PATH).toPath(), StandardCharsets.UTF_8);
+                    for (final var line : lines) {
+                        IO.println(line);
+                    }
+                } catch (final IOException e) {
+                    JOptionPane.showMessageDialog(frame, e, "Error", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace(); // NOPMD: allowed as this is just an exercise
+                }
+            }
+        });
     }
 
     private void display() {
@@ -90,6 +109,7 @@ public class BadIOGUI {
          * on screen. Results may vary, but it is generally the best choice.
          */
         frame.setLocationByPlatform(true);
+        frame.pack();
         /*
          * OK, ready to push the frame onscreen
          */
